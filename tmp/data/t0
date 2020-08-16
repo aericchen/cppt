@@ -1,1 +1,23 @@
 
+lm:{[x;y]
+  if[(type x)=98h;x:value each x];
+  if[(type y)=98h;y:raze value each y];
+  x:`float$1,/:x;
+  y:`float$y;
+  b:{{(first x;(first x) mmu last x)} {((inv x mmu y);x mmu z)}[flip x;x;y]}[x;y];
+  ix:first b;
+  b:last b;
+  n:count y;
+  nc:count x 0;
+  dfe:n - nc;
+  dfr:nc - 1;
+  e:y - x mmu b;
+  sse: sum e * e % dfe;
+  se:sqrt sse * {{y[x][x]}[;x] each til count x} ix;
+  t:b % se;
+  r2:1 - %[var e;var y];
+  r2adj:1-(1-r2)*%[n-1;n-nc];
+  p:1 - .qml.stcdf[dfe;] each abs t;
+  pRange:b * {[i;x] dev x[;i]}[;x] each til count flip x;
+  `estimates`fit!(([] coefficient:b;stdError:se;tstat:t;pvalue:p;signif:.stats.star each p;pRange:pRange);([] r2:enlist r2;r2adj:enlist r2adj;sse:enlist sqrt sse;dfe:enlist dfe))
+  }
