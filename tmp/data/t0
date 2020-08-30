@@ -1,1 +1,22 @@
 
+leastsq:{[data;outData;coly;colx;inte;name]
+  coly:(),coly;colx:(),colx;
+  dimy:count data[coly][0];
+  dimx:$[inte;1+count colx;count colx];
+  y:data[coly];
+  oy:outData[coly];
+  x0:$[inte;(enlist dimy#1.0),data[colx];data[colx]];
+  outX0:$[inte;(enlist dimy#1.0),outData[colx];outData[colx]];
+  beta:y lsq x0;
+  .Q.gc[];
+  e:y - beta mmu x0;
+  eout:oy-beta mmu outX0;
+  r2: 1-(e mmu flip e)%(y mmu flip y);
+  r2Out: 1-(eout mmu flip eout)%(oy mmu flip oy);
+  bias:dev (beta mmu x0)[0];
+  se: {[x;y;z]sqrt y[0][0]*z[x][x]}[;(e mmu flip e)%(dimy-dimx);inv (x0 mmu flip x0)] each til dimx;
+  colxs:`$"+" sv string $[inte;`inter,colx;colx];
+  colys:`$"+" sv string coly;
+  .Q.gc[];
+  `vari`beta`bse`bias`se`ss`r2`r2Out`name`y`x!($[inte;`inter,colx;colx];beta[0];se;bias;(e mmu flip e)[0][0];(y mmu flip y)[0][0];r2[0][0];r2Out[0][0];name;colys;colxs)
+  };
