@@ -1,19 +1,1 @@
 
-getData:{[hdb;db;tb;d;up2]
-  paths:@[hsym each `$read0@;` sv (hdb;db;`par.txt);enlist ` sv (hdb;db)];
-  paths:x where tb in/: key@/:x:(,/){(` sv)@/:x,/:key x}each paths;
-  pdts:(type[d]$last "/" vs)@/:string paths;
-  idx:first where d=pdts;  
-  if[null[idx] and up2;
-   idx:pdts ? max pdts where d>=pdts;
-   if[idx=count pdts; idx:0N;];
-   ];
-  syms:get ` sv (hdb;db;`sym);
-  tbpath:$[null idx;last paths; paths[idx]];
-  d:$[null idx;last pdts; pdts[idx]];
-  t:get ` sv (tbpath;tb);
-  if[null idx;t:0#t];
-  t:![t;();0b;c!(enlist syms;) each c:where 20h=type each flip t];  
-  t:`date xcols update date:d from t;
-  :t
-  };
